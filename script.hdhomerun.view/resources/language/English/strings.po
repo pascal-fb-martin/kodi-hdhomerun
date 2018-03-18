@@ -167,6 +167,19 @@ msgid "[B]Controls:[/B][CR][CR]   Remote/Controller:[CR]      Show Guide: Select
 msgstr ""
 
 
+#Manual configuration, when a firewall prevents UDP discovery.
+msgctxt "#32200"
+msgid "Tuner Network Address"
+msgstr ""
+
+msgctxt "#32201"
+msgid "Tuner ID"
+msgstr ""
+
+msgctxt "#32202"
+msgid "Tuner Authorization ID"
+msgstr ""
+
 #Transcoding
 msgctxt "#32500"
 msgid "None"

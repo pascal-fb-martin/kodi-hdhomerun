@@ -49,7 +49,27 @@ class Devices(object):
         self._storageServers = []
         self._tunerDevices = {}
         self._other = []
+        self.loadConfiguration()
         self.discover()
+
+    def loadConfiguration(self):
+        tuner = util.getSetting('tuner.ip')
+        auth = util.getSetting('tuner.auth')
+        if tuner:
+           if auth:
+              self.addManual([tuner, 80], util.getSetting('tuner.id'), auth)
+           else:
+              self.addManual([tuner, 80], util.getSetting('tuner.id'))
+
+    def addManual(self,address,id,auth=None):
+        device = TunerDevice(address)
+        device.ID = id
+        device._id = int('0x'+id, 16)
+        if auth:
+           device._deviceAuthString = auth
+        self._tunerDevices[address[0]] = device
+        util.LOG('Added tuner '+address[0]+' manually')
+        return True
 
     def discover(self, device=None):
         import netif
@@ -195,7 +215,6 @@ class Devices(object):
 
     def add(self,packet, address):
         device = self.createDevice(packet,address)
-
         if not device or not device.valid:
             return None
         elif device in self:
