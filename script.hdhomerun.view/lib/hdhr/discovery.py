@@ -9,6 +9,10 @@ import time
 import base64
 import requests
 import errors
+import json
+import urllib2
+import xbmcgui
+import xbmcaddon
 from lib import util
 
 DEVICE_DISCOVERY_PORT = 65001
@@ -49,7 +53,30 @@ class Devices(object):
         self._storageServers = []
         self._tunerDevices = {}
         self._other = []
+        self.webDiscover()
         self.discover()
+
+    def webDiscover(self):
+        try:
+           result = json.loads(urllib2.urlopen('http://ipv4-my.hdhomerun.com/discover').read())
+           for tuner in result:
+              discover = json.loads(urllib2.urlopen(tuner['DiscoverURL']).read())
+              for item in discover:
+                 self.addManual([tuner['LocalIP'],80],
+                           discover['DeviceID'], discover['DeviceAuth'])
+        except:
+           xbmcgui.Dialog().ok(xbmcaddon.Addon().getAddonInfo("name"),
+                               "Cannot access Silicon Dust's web site")
+
+    def addManual(self,address,id,auth=None):
+        device = TunerDevice(address)
+        device.ID = id
+        device._id = int('0x'+id, 16)
+        if auth:
+           device._deviceAuthString = auth
+        self._tunerDevices[address[0]] = device
+        util.LOG('Added tuner '+address[0]+' manually')
+        return True
 
     def discover(self, device=None):
         import netif
