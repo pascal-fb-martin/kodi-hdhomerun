@@ -5,6 +5,6 @@ This addon for Kodi differs from the official HDHomeRun in the way it discovers 
 
 This change allows using the addon through a firewall that blocks the UDP discovery.
 
-The configuration requires one additional item: the network name (or IP address) of the device. The addon will retrieve all other necessary information from the device itself.
+The configuration requires one additional item: a space-separated list of network names (or IP addresses) of the devices. The addon will retrieve all other necessary information from each device.
 
 Apart from the configuration item above, there is no change to the addon user interface.

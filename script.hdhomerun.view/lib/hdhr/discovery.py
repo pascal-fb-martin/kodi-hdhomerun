@@ -54,17 +54,18 @@ class Devices(object):
         self.discover()
 
     def loadConfiguration(self):
-        tuner = util.getSetting('tuner.ip')
-        if tuner:
-           tunerUrl = SETUP_URL_BASE.format(ip=tuner)
-           util.DEBUG_LOG('Discovery URL: {0}'.format(tunerUrl))
-           try:
-              req = requests.get(tunerUrl)
-              util.DEBUG_LOG('Discovery result: {0}'.format(req.text))
-              setup = req.json()
-              self.addManual([tuner, 80], setup[u'DeviceID'], setup[u'DeviceAuth'])
-           except:
-              util.ERROR('Failed to parse discovery JSON data. Older device?',hide_tb=True)
+        tunerCfg = util.getSetting('tuner.ip')
+        if tunerCfg:
+           for tuner in tunerCfg.split():
+              tunerUrl = SETUP_URL_BASE.format(ip=tuner)
+              util.DEBUG_LOG('Discovery URL: {0}'.format(tunerUrl))
+              try:
+                 req = requests.get(tunerUrl)
+                 util.DEBUG_LOG('Discovery result: {0}'.format(req.text))
+                 setup = req.json()
+                 self.addManual([tuner, 80], setup[u'DeviceID'], setup[u'DeviceAuth'])
+              except:
+                 util.ERROR('Failed to parse discovery JSON data from {0}'.format(tuner), hide_tb=True)
 
     def addManual(self,address,id,auth=None):
         device = TunerDevice(address)
