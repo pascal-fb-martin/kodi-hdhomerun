@@ -30,6 +30,7 @@ DEVICE_AUTH_STRING = 0x2B
 STORAGE_SERVER_BASE_URL = 0x2A
 
 LINEUP_URL_BASE = 'http://{ip}/lineup.json'
+SETUP_URL_BASE = 'http://{ip}/discover.json'
 
 ID_COUNTER = 0
 
@@ -54,12 +55,16 @@ class Devices(object):
 
     def loadConfiguration(self):
         tuner = util.getSetting('tuner.ip')
-        auth = util.getSetting('tuner.auth')
         if tuner:
-           if auth:
-              self.addManual([tuner, 80], util.getSetting('tuner.id'), auth)
-           else:
-              self.addManual([tuner, 80], util.getSetting('tuner.id'))
+           tunerUrl = SETUP_URL_BASE.format(ip=tuner)
+           util.DEBUG_LOG('Discovery URL: {0}'.format(tunerUrl))
+           try:
+              req = requests.get(tunerUrl)
+              util.DEBUG_LOG('Discovery result: {0}'.format(req.text))
+              setup = req.json()
+              self.addManual([tuner, 80], setup[u'DeviceID'], setup[u'DeviceAuth'])
+           except:
+              util.ERROR('Failed to parse discovery JSON data. Older device?',hide_tb=True)
 
     def addManual(self,address,id,auth=None):
         device = TunerDevice(address)

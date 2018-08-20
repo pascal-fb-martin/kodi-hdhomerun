@@ -13,8 +13,6 @@
     <setting id="show.DRM" type="bool" label="32028" default="false" />
     <setting id="debug" type="bool" label="32003" default="false" />
     <setting id="tuner.ip" type="text" label="32200" default="" />
-    <setting id="tuner.id" type="text" label="32201" default="" />
-    <setting id="tuner.auth" type="text" label="32202" default="" />
   </category>
 
 </settings>
